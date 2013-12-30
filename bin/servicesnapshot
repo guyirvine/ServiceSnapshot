@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+#Add the currently running directory to the start of the load path
+$:.unshift './'
+
+require "helper_functions"
+require "Snapshot/Ssh"
+require "Snapshot/Beanstalk"
+
+#Don't buffer stdout
+$stdout.sync = true
+
+abort( "Usage: servicesnapshot <path to dsl>" ) if ARGV.length != 1
+
+dslName = ARGV[0]
+
+#Need to remove file name extension 
+ENV["APP_NAME"] = File.basename( dslName ) if ENV["APP_NAME"].nil?
+
+log "Loading dsl, #{dslName}", true
+begin
+    load dslName
+
+    rescue ArgumentError=>e
+        puts "*** Your dsl is not formatted correctly"
+        puts "*** Ensure each line has the format,"
+        puts "***   <command>, [:arg=>value]"
+    rescue SystemExit=>e
+#    rescue SIGTERM=>e
+    rescue Exception=>e
+puts "What the ..."
+        puts e.class.name
+        puts e.message
+	puts e.backtrace
+end
+

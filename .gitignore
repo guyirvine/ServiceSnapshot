@@ -1,0 +1,9 @@
+*.log
+out
+err
+*DS_Store*
+servicesnapshot-*.gem
+build
+*.xcworkspace
+Examples/Work/*
+
