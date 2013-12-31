@@ -1,17 +1,16 @@
 require "net/ssh"
 
 def ssh( params )
+    usage = "ssh :user=><username>, :host=><hostname>, :queues=><queue|[queue1,queue2,...]>"
+    user = get_param( params, :user, usage )
+    host = get_param( params, :host, usage )
+    cmd = get_param( params, :cmd, usage )
     
-    abort( "*** Incorrect parameters passed for, ssh\n*** Usage, ssh :user=><username>, :host=><hostname>, :cmd=><cmd>" ) if params.class.name != "Hash" || params.keys.length != 3
-    abort( "*** User parameter missing for, ssh, command\n*** Add, :user=><username>" ) if params[:user].nil?
-    abort( "*** Host parameter missing for, ssh, command\n*** Add, :host=><host>" ) if params[:host].nil?
-    abort( "*** Cmd parameter missing for, ssh, command\n*** Add, :cmd=><cmd>" ) if params[:cmd].nil?
-
     content = ""
-    Net::SSH.start(params[:host], params[:user]) do |ssh|
-        content = ssh.exec!(params[:cmd])
+    Net::SSH.start(host, user) do |ssh|
+        content = ssh.exec!(cmd)
     end
 
-    title = "ssh: #{params[:user]}@#{params[:host]} #{params[:cmd]}"
+    title = "ssh: #{user}@#{host} #{cmd}"
     formatOutput( title, content )
 end

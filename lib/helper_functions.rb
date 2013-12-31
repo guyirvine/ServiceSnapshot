@@ -1,5 +1,29 @@
 require "net/ssh/gateway"
 
+class ParameterMissingError<StandardError
+end
+
+def get_param( params, name, usage )
+    return params[name] unless params[name].nil?
+    return ENV[name.to_s] unless ENV[name.to_s].nil?
+
+
+msg = %{*** Could not find parameter, #{name.to_s}, for command, #{caller[0][/`.*'/][1..-2]}
+*** #{usage}
+*** Try :#{name.to_s}=>'YourValue'
+}
+
+    raise ParameterMissingError.new( msg )
+end
+
+def env( *args )
+    raise "Must have an even number of argument to env" if args.length % 2 != 0
+    
+    (0..args.length-1).step(2) do |i|
+        ENV[args[i]] = args[i+1]
+    end
+end
+
 def open_gateway( user, host )
     log "Opening SSH Gateway to, #{host}", true
     gateway = Net::SSH::Gateway.new(host, user)
