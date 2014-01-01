@@ -10,9 +10,21 @@ require "Snapshot/Beanstalk"
 #Don't buffer stdout
 $stdout.sync = true
 
-abort( "Usage: servicesnapshot <path to dsl>" ) if ARGV.length != 1
+if ARGV.length != 1 then
+    puts "Available dsl's"
+    puts "==============="
+    Dir.glob("./*.dsl").each do |dslFileName|
+        puts File.basename(dslFileName)
+    end
+    Dir.glob("#{ENV['HOME']}/servicesnapshot/*.dsl").each do |dslFileName|
+        puts File.basename(dslFileName)
+    end
+    puts "==============="
 
-dslName = ARGV[0]
+    abort( "Usage: servicesnapshot <path to dsl>" ) if ARGV.length != 1
+end
+
+dslName = getFileName(ARGV[0])
 
 #Need to remove file name extension 
 ENV["APP_NAME"] = File.basename( dslName ) if ENV["APP_NAME"].nil?

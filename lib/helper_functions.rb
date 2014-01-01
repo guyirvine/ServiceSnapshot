@@ -54,3 +54,21 @@ end
 def formatOutput( title, content )
     puts "\n===> #{title} <===\n#{content}"
 end
+
+def getDslDirectory
+    return "#{ENV['HOME']}/servicesnapshot"
+end
+
+
+def getFileName( path )
+    path = "#{path}.dsl" if File.extname(path) == ""
+    
+    p = path
+    return p if File.exists?( p )
+
+    p = "#{getDslDirectory}/#{path}"
+    return p if File.exists?( p )
+
+    abort( "Could not find the dsl you passed in, #{path}" )
+end
+

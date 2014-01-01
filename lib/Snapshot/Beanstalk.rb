@@ -46,7 +46,7 @@ def beanstalk( params )
         queues = get_param( params, :queues, usage )
         rescue ParameterMissingError=>e
     end
-
+    queues = [queues] if queues.class.name == "String"
 
     localPort, gateway = open_gateway( user, host )
     
@@ -56,9 +56,20 @@ def beanstalk( params )
     log "Connect to remote beanstalk", true
     beanstalk = Beanstalk::Pool.new([destinationUrl])
     
+    hash = Hash.new
     beanstalk.list_tubes[destinationUrl].each do |name|
         tubeStats = beanstalk.stats_tube(name)
-        list << name + "(" + tubeStats["current-jobs-ready"].to_s + ")" if queues.nil? or queues.index( name ).nil?
+        hash[name] = tubeStats["current-jobs-ready"].to_s
+    end
+    
+    if queues.nil? then
+        hash.each do |k,v|
+            list << "#{k}(#{v})"
+        end
+    else
+        queues.each do |k|
+            list << "#{k}(#{hash[k]})"
+        end
     end
     
     title = "beanstalk: #{user}@#{host} #{queues}"
