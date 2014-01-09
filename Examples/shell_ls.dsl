@@ -1,0 +1,2 @@
+shell :cmd=>"ls"
+

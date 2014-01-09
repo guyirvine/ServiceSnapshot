@@ -6,6 +6,8 @@ $:.unshift './'
 require "helper_functions"
 require "Snapshot/Ssh"
 require "Snapshot/Beanstalk"
+require "Snapshot/Shell"
+require "Snapshot/FluidDb"
 
 #Don't buffer stdout
 $stdout.sync = true

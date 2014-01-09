@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'servicesnapshot'
-  s.version     = '0.0.3'
-  s.date        = '2014-01-01'
+  s.version     = '0.0.5'
+  s.date        = '2014-01-09'
   s.summary     = "ServiceSnapshot"
   s.description = "The fastest way to get a snapshot of your system."
   s.authors     = ["Guy Irvine"]
