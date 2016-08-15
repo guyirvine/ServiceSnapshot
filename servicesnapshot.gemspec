@@ -1,7 +1,8 @@
 Gem::Specification.new do |s|
   s.name        = 'servicesnapshot'
-  s.version     = '0.0.5'
-  s.date        = '2014-01-09'
+  s.version     = '0.1.0'
+  s.license     = 'LGPL-3.0'
+  s.date        = '2016-08-16'
   s.summary     = "ServiceSnapshot"
   s.description = "The fastest way to get a snapshot of your system."
   s.authors     = ["Guy Irvine"]
@@ -13,4 +14,3 @@ Gem::Specification.new do |s|
 #s.add_dependency( "fluiddb" )
   s.executables << 'servicesnapshot'
 end
-

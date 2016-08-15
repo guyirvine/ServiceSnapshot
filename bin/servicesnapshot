@@ -1,53 +1,54 @@
 #!/usr/bin/env ruby
 
-#Add the currently running directory to the start of the load path
+# Add the currently running directory to the start of the load path
 $:.unshift './'
 
-require "helper_functions"
-require "Snapshot/Ssh"
-require "Snapshot/Beanstalk"
-require "Snapshot/Shell"
-require "Snapshot/FluidDb"
+require 'helper_functions'
+require 'snapshot/Ssh'
+require 'snapshot/Beanstalk'
+require 'snapshot/Shell'
+require 'snapshot/FluidDb'
 
-#Don't buffer stdout
+# Don't buffer stdout
 $stdout.sync = true
 
-if ARGV.length != 1 then
-    puts "Available dsl's"
-    puts "==============="
-    Dir.glob("./*.dsl").each do |dslFileName|
-        puts File.basename(dslFileName)
-    end
-    Dir.glob("#{ENV['HOME']}/servicesnapshot/*.dsl").each do |dslFileName|
-        puts File.basename(dslFileName)
-    end
-    puts "==============="
+if ARGV.length != 1
+  puts 'Available dsl''s'
+  puts '==============='
+  puts '=== ./'
+  Dir.glob('./*.dsl').each do |dsl_file_name|
+    puts File.basename(dsl_file_name)
+  end
+  puts "=== #{ENV['HOME']}/servicesnapshot/"
+  Dir.glob("#{ENV['HOME']}/servicesnapshot/*.dsl").each do |dsl_file_name|
+    puts File.basename(dsl_file_name)
+  end
+  puts '==============='
 
-    abort( "Usage: servicesnapshot <path to dsl>" ) if ARGV.length != 1
+  abort('Usage: servicesnapshot <path to dsl>') if ARGV.length != 1
 end
 
-dslName = getFileName(ARGV[0])
+dsl_name = get_file_name(ARGV[0])
 
-#Need to remove file name extension 
-ENV["APP_NAME"] = File.basename( dslName ) if ENV["APP_NAME"].nil?
+# Need to remove file name extension
+ENV['APP_NAME'] = File.basename(dsl_name) if ENV['APP_NAME'].nil?
 
-log "Loading dsl, #{dslName}", true
+log "Loading dsl, #{dsl_name}", true
 begin
-    load dslName
+  load dsl_name
+rescue ArgumentError
+  puts '*** Your dsl is not formatted correctly'
+  puts '*** Ensure each line has the format,'
+  puts '***   <command>, [:arg=>value]'
+rescue ParameterMissingError => e
+  puts e.message
 
-    rescue ArgumentError=>e
-        puts "*** Your dsl is not formatted correctly"
-        puts "*** Ensure each line has the format,"
-        puts "***   <command>, [:arg=>value]"
-    rescue ParameterMissingError=>e
-        puts e.message
+rescue SystemExit
+  puts 'SystemExit ...'
 
-    rescue SystemExit=>e
-#    rescue SIGTERM=>e
-    rescue Exception=>e
-puts "What the ..."
-        puts e.class.name
-        puts e.message
-	puts e.backtrace
+rescue StandardError => e
+  puts 'What the ...'
+  puts e.class.name
+  puts e.message
+  puts e.backtrace
 end
-
